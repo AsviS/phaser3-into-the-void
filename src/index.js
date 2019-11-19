@@ -1,32 +1,40 @@
-import Phaser from "phaser";
-import logoImg from "./assets/logo.png";
+import Phaser from 'phaser';
+import BoardPlugin from './plugins/board-plugin.js';
+import rexUI from './plugins/dist/rexuiplugin.min.js'
+import rexPathFollower from './plugins/pathfollower.js';
+import Preload from './scenes/Preload.js';
+import MainMenu from './scenes/MainMenu.js';
+import HUD from './scenes/Hud.js'
+import GalaxyMap from './scenes/GalaxyMap';
+import Level from './scenes/Level.js';
+import Demo from './scenes/Demo.js';
 
 const config = {
   type: Phaser.AUTO,
-  parent: "phaser-example",
-  width: 800,
-  height: 600,
-  scene: {
-    preload: preload,
-    create: create
-  }
+  width: window.innerWidth,
+  height: window.innerHeight,
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
+  plugins: {
+    scene: [{
+      key: 'rexBoard',
+      plugin: BoardPlugin,
+      mapping: 'rexBoard'
+    },
+    {
+      key: 'rexuiplugin',
+      plugin: rexUI,
+      mapping: 'rexUI'
+    },
+    {
+      key: 'rexPathFollower',
+      plugin: rexPathFollower,
+      start: true
+    }],
+  },
+  scene: [Preload,MainMenu,HUD,GalaxyMap,Level]
 };
 
 const game = new Phaser.Game(config);
-
-function preload() {
-  this.load.image("logo", logoImg);
-}
-
-function create() {
-  const logo = this.add.image(400, 150, "logo");
-
-  this.tweens.add({
-    targets: logo,
-    y: 450,
-    duration: 2000,
-    ease: "Power2",
-    yoyo: true,
-    loop: -1
-  });
-}
